@@ -1,0 +1,84 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    function validProfile(uid) {
+      return request.resource.data.keys().hasAll([
+          'uid', 'email', 'displayName', 'currencyCode', 'createdAt'
+        ])
+        && request.resource.data.keys().hasOnly([
+          'uid', 'email', 'displayName', 'currencyCode', 'createdAt'
+        ])
+        && request.resource.data.uid == uid
+        && request.resource.data.email == request.auth.token.email
+        && request.resource.data.displayName is string
+        && request.resource.data.displayName.size() > 0
+        && request.resource.data.currencyCode in ['LKR', 'USD', 'EUR', 'GBP', 'INR']
+        && request.resource.data.createdAt == request.time;
+    }
+
+    match /users/{uid} {
+      allow create: if request.auth != null
+        && request.auth.uid == uid
+        && validProfile(uid);
+      allow read, delete: if request.auth != null
+        && request.auth.uid == uid;
+      allow update: if request.auth != null
+        && request.auth.uid == uid
+        && request.resource.data.diff(resource.data).affectedKeys()
+            .hasOnly(['displayName', 'currencyCode', 'updatedAt'])
+        && request.resource.data.uid == resource.data.uid
+        && request.resource.data.email == resource.data.email
+        && request.resource.data.displayName is string
+        && request.resource.data.displayName.size() > 0
+        && request.resource.data.currencyCode in ['LKR', 'USD', 'EUR', 'GBP', 'INR'];
+    }
+
+    match /expenses/{expenseId} {
+      allow read, delete: if request.auth != null
+        && resource.data.userId == request.auth.uid;
+      allow create: if request.auth != null
+        && request.resource.data.userId == request.auth.uid
+        && request.resource.data.id == expenseId
+        && request.resource.data.keys().hasOnly([
+          'id', 'title', 'category', 'amount', 'date', 'note', 'userId',
+          'createdAt', 'updatedAt'
+        ])
+        && request.resource.data.title is string
+        && request.resource.data.title.size() > 0
+        && request.resource.data.amount is number
+        && request.resource.data.amount > 0
+        && request.resource.data.category is string
+        && request.resource.data.date is timestamp
+        && request.resource.data.createdAt == request.time
+        && request.resource.data.updatedAt == request.time;
+      allow update: if request.auth != null
+        && resource.data.userId == request.auth.uid
+        && request.resource.data.userId == resource.data.userId
+        && request.resource.data.diff(resource.data).affectedKeys()
+            .hasOnly(['title', 'category', 'amount', 'date', 'note', 'updatedAt'])
+        && request.resource.data.title is string
+        && request.resource.data.title.size() > 0
+        && request.resource.data.amount is number
+        && request.resource.data.amount > 0
+        && request.resource.data.category is string
+        && request.resource.data.date is timestamp
+        && request.resource.data.updatedAt == request.time;
+    }
+
+    match /budgets/{budgetId} {
+      allow read, delete: if request.auth != null
+        && resource.data.userId == request.auth.uid;
+      allow create: if request.auth != null
+        && request.resource.data.userId == request.auth.uid
+        && request.resource.data.category is string
+        && request.resource.data.category.size() > 0
+        && request.resource.data.limit is number
+        && request.resource.data.limit > 0;
+      allow update: if request.auth != null
+        && resource.data.userId == request.auth.uid
+        && request.resource.data.userId == resource.data.userId
+        && request.resource.data.diff(resource.data).affectedKeys()
+            .hasOnly(['category', 'limit', 'month', 'updatedAt']);
+    }
+  }
+}

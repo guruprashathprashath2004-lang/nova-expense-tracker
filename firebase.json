@@ -1,0 +1,27 @@
+{
+  "firestore": {
+    "rules": "firestore.rules",
+    "indexes": "firestore.indexes.json"
+  },
+  "flutter": {
+    "platforms": {
+      "android": {
+        "default": {
+          "projectId": "nova-expense-tracker-aa089",
+          "appId": "1:513256279316:android:ac3b8a02b97118f97a8601",
+          "fileOutput": "android/app/google-services.json"
+        }
+      },
+      "dart": {
+        "lib/firebase_options.dart": {
+          "projectId": "nova-expense-tracker-aa089",
+          "configurations": {
+            "android": "1:513256279316:android:ac3b8a02b97118f97a8601",
+            "ios": "1:513256279316:ios:5a6ed6aecc335cc97a8601",
+            "web": "1:513256279316:web:c02c57be15a163f07a8601"
+          }
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,49 @@
+name: nova
+description: "Nova — Liquid Glass Expense Tracker with Firebase & role-based management."
+publish_to: 'none'
+version: 1.0.0+1
+
+environment:
+  sdk: '>=3.3.0 <4.0.0'
+
+dependencies:
+  flutter:
+    sdk: flutter
+
+  # State management
+  flutter_riverpod: ^2.5.1
+
+  # Firebase
+  firebase_core: ^2.32.0
+  cloud_firestore: ^4.17.4
+  firebase_auth: ^4.20.0
+  http: ^1.2.2
+
+  # Navigation
+  go_router: ^14.2.0
+
+  # Charts
+  fl_chart: ^0.68.0
+
+  # Fonts / formatting
+  google_fonts: ^6.2.1
+  intl: ^0.19.0
+
+  # Local persistence
+  shared_preferences: ^2.2.3
+
+  # Export
+  csv: ^6.0.0
+  pdf: ^3.11.0
+  share_plus: ^9.0.0
+
+  # IDs
+  uuid: ^4.4.0
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^4.0.0
+
+flutter:
+  uses-material-design: true
